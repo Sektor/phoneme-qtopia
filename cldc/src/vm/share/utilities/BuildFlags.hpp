@@ -162,6 +162,8 @@
 //                                    the instruction cache (for platforms
 //                                    without OS support).
 //
+// ENABLE_ARM_EABI_COMPATIBILITY 0,0  Generate assembly code compatible with ARM EABI.
+//
 // ENABLE_BYTECODE_FLUSHING      0,0  Special code needed for bytecode
 //                                    rewriting
 //

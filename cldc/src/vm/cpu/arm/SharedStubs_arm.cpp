@@ -810,7 +810,18 @@ void SharedStubs::generate_brute_force_icache_flush() {
     // On Linux 2.6 and newer, r2 must be zet to zero. r2's value
     // used to be ignored on previous versions of Linux.
     mov(r2, imm(0));
-    swi(0x9F0002);
+    if (!ArmEabiCompatibility)
+    {
+      swi(0x9F0002);
+    }
+    else
+    {
+      stmfd(sp, set(r7), writeback);
+      mov(r7,imm(0x0f0000));
+      add(r7,r7,imm(0x000002));
+      swi(0x0);
+      ldmfd(sp, set(r7), writeback);
+    }
     jmpx(lr);
 
   bind(flush_loop);

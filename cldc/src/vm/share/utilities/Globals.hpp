@@ -167,6 +167,9 @@ private:
   develop(int, BruteForceICacheFlushSize, 32 * 1024,                        \
           "Number of bytes in the brute-force icache flushing function")    \
                                                                             \
+  develop(bool, ArmEabiCompatibility, ENABLE_ARM_EABI_COMPATIBILITY,        \
+          "Generate assembly code compatible with ARM EABI")                \
+                                                                            \
   develop(int, MinimumCompileSpace, 30 * 1024,                              \
           "Minimum free heap space to allow compiler invocation")           \
                                                                             \
