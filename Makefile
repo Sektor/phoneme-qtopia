@@ -1,7 +1,8 @@
 # phoneME feature mr3 build makefile for phoneme-qtopia development
 
 ###############################
-ARCH ?= i386
+#ARCH ?= i386
+ARCH = arm
 include config_$(ARCH).gmk
 ####################
 # Make rules

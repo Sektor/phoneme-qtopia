@@ -1,19 +1,32 @@
-### phoneME config for i386
+### phoneME config for ARM
+
+### IMPORTANT !!!
+### PhoneME does NOT compiles on x86_64 linux. Use i386.
+### Don't forget to install "gawk" on host machine
+### and extra libraries on arm toolchain:
+###  libpng12-0
+###  libpng12-dev
+###  libsqlite3-0
+###  libsqlite3-dev
+### Modify JDK_DIR for your system if needed.
+### Enable debug build of MIDP if needed.
+### QPEDIR environment variable must point to directory
+### with Qt Extended build (usually named "build").
 
 # Config variables
 
-GCC_VERSION = "-4.2"
+GCC_VERSION = "-4.3"
 
 # System paths
-JDK_DIR=/usr/java/j2sdk1.4.2_19
+JDK_DIR=/usr/lib/jvm/java-6-openjdk
 
-QTOPIA_SDK_DIR = /opt/toolchains/arm-iwmmxt-linux-gnu/qtopia
-QTOPIA_SDK_MOC = $(QTOPIA_SDK_DIR)/qtopiacore/target/bin/moc
-QTOPIA_TARGET_PREFIX = /opt
-CROSSTOOL_DIR = /opt/toolchains/arm-iwmmxt-linux-gnu
-CROSSTOOL_GCC_PREFIX = arm-iwmmxt-linux-gnu-
-CROSSTOOL_SYSTEM_INCLUDES = -I/opt/toolchains/arm-iwmmxt-linux-gnu/stage/include
-CROSSTOOL_SYSTEM_LIBS = -L/opt/toolchains/arm-iwmmxt-linux-gnu/stage/lib
+QTOPIA_SDK_DIR = $(QPEDIR)
+QTOPIA_SDK_MOC = $(QPEDIR)/qtopiacore/target/bin/moc
+QTOPIA_TARGET_PREFIX = /opt/qtmoko
+CROSSTOOL_DIR = /opt/toolchains/arm920t-eabi
+CROSSTOOL_GCC_PREFIX = arm-angstrom-linux-gnueabi-
+CROSSTOOL_SYSTEM_INCLUDES = -I/opt/toolchains/arm920t-eabi/arm-angstrom-linux-gnueabi/include
+CROSSTOOL_SYSTEM_LIBS = -L/opt/toolchains/arm920t-eabi/arm-angstrom-linux-gnueabi/lib
 
 DOXYGEN_CMD = doxygen
 
@@ -45,7 +58,7 @@ PCSL_CONFIG = PCSL_PLATFORM=linux_arm_gcc \
               USE_VERBOSE_MAKE=true VERBOSE_BUILD=true
               
 # CLDC
-CLDC_TARGET = linux_arm_pxa270
+CLDC_TARGET = linux_arm_s3c24xx
 CLDC_JVM_CONFIG = JVMWorkSpace=$(COMPONENTS_DIR)/cldc \
                   JVMBuildSpace=$(BUILD_OUTPUT_DIR)/cldc
 CLDC_PCSL_CONFIG = ENABLE_PCSL=true \
@@ -74,6 +87,7 @@ MIDP_EXTRA_CONFIG = USE_ABSTRACTIONS=false ABSTRACTIONS_DIR=$(COMPONENTS_DIR)/ab
 		    USE_NATIVE_INSTALLER=false USE_NATIVE_APP_MANAGER=false \
 		    USE_NATIVE_SUITE_STORAGE=false USE_JAVACALL_PROPERTIES=false \
 		    USE_AMS_EXECTABLE=true USE_AMS_FOLDER=true USE_SCRIPT_UTILS=true
-MIDP_DEBUG_CONFIG = USE_DEBUG=true
+#MIDP_DEBUG_CONFIG = USE_DEBUG=true
+MIDP_DEBUG_CONFIG = USE_DEBUG=false
 MIDP_COMPILER_CONFIG = GNU_TOOLS_DIR=$(CROSSTOOL_DIR) GNU_TOOLS_PREFIX=$(CROSSTOOL_GCC_PREFIX) TARGET_OS=linux TARGET_CPU=arm
 # MIDP build system does not use host toolchain so GCC_VERSION means target gcc version and omitted

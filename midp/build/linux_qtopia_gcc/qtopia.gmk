@@ -66,18 +66,19 @@ endif
 
 EXTRA_INCLUDES  +=   \
   $(CROSSTOOL_SYSTEM_INCLUDES) \
-  -I$(QTOPIA_SDK_DIR)/qtopiacore/target/include/QtCore -I$(QTOPIA_SDK_DIR)/qtopiacore/target/include/QtNetwork \
-  -I$(QTOPIA_SDK_DIR)/qtopiacore/target/include/QtGui -I$(QTOPIA_SDK_DIR)/qtopiacore/target/include/QtXml \
-  -I$(QTOPIA_SDK_DIR)/qtopiacore/target/include/QtSql -I$(QTOPIA_SDK_DIR)/qtopiacore/target/include/QtSvg \
-  -I$(QTOPIA_SDK_DIR)/qtopiacore/target/include  \
-  -I$(QTOPIA_SDK_DIR)/include -I$(QTOPIA_SDK_DIR)/include/classic \
-  -I$(QTOPIA_SDK_DIR)/include/qtopiabase -I$(QTOPIA_SDK_DIR)/include/qtopia \
+  -I$(QTOPIA_SDK_DIR)/sdk/qtopiacore/target/include/QtCore -I$(QTOPIA_SDK_DIR)/sdk/qtopiacore/target/include/QtNetwork \
+  -I$(QTOPIA_SDK_DIR)/sdk/qtopiacore/target/include/QtGui -I$(QTOPIA_SDK_DIR)/sdk/qtopiacore/target/include/QtXml \
+  -I$(QTOPIA_SDK_DIR)/sdk/qtopiacore/target/include/QtSql -I$(QTOPIA_SDK_DIR)/sdk/qtopiacore/target/include/QtSvg \
+  -I$(QTOPIA_SDK_DIR)/sdk/qtopiacore/target/include  \
+  -I$(QTOPIA_SDK_DIR)/sdk/include -I$(QTOPIA_SDK_DIR)/include/classic \
+  -I$(QTOPIA_SDK_DIR)/sdk/include/qtopiabase -I$(QTOPIA_SDK_DIR)/sdk/include/qtopia \
   -I$(QTOPIA_SDK_DIR)/qtopiacore/qt/src/3rdparty/zlib -I$(QTOPIA_SDK_DIR)/qtopiacore/qt/src/3rdparty/sqlite
 EXTRA_CFLAGS	+= \
   $(QTOPIA_DEFINES) -DMAINWINDOW_TITLE=\"$(MAINWINDOW_TITLE)\"
 LIBS		+= \
   $(CROSSTOOL_SYSTEM_LIBS) \
-  -L$(QTOPIA_SDK_DIR)/qtopiacore/target/lib -L$(QTOPIA_SDK_DIR)/lib \
+  -L$(QTOPIA_SDK_DIR)/qtopiacore/target/lib -L$(QTOPIA_SDK_DIR)/sdk/lib \
   -lQtSvg -lQtSql -lQtXml -lQtGui -lQtNetwork -lQtCore \
   -lm -ldl -lpthread -lqtopiabase -lqtopia -lmd5  -lz -lpng -lpng12 -lts -lsqlite3 \
+  /opt/QtExtended/build/sdk/lib/libqtopiagfx.so.4 /opt/QtExtended/build/sdk/lib/libqtopia-sqlite.so.1 \
   -Wl,-rpath,$(QTOPIA_TARGET_PREFIX)/lib
