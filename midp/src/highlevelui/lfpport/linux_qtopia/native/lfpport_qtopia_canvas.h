@@ -4,6 +4,7 @@
 #include "lfpport_qtopia_displayable.h"
 #include <QWidget>
 #include <lfpport_error.h>
+#include <japplication.h>
 
 class JCanvas: public JDisplayable, public QWidget
 {
@@ -22,6 +23,8 @@ class JCanvas: public JDisplayable, public QWidget
     void mouseReleaseEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
+  private:
+    RunConfig *cfg;
 };
 
 #endif // _LFPPORT_QTOPIA_CANVAS_H_

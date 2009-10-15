@@ -78,6 +78,8 @@ JCanvas::JCanvas(QWidget *parent, MidpDisplayable *canvasPtr, QString title, QSt
     setAttribute(Qt::WA_PaintOnScreen, true);
 
     setFocusPolicy(Qt::StrongFocus);
+
+    cfg = &(JApplication::instance()->cfg);
 }
 
 JCanvas::~JCanvas()
@@ -123,6 +125,12 @@ void JCanvas::mouseMoveEvent(QMouseEvent *event)
   evt.X_POS = event->x();
   evt.Y_POS = event->y();
 
+  if (cfg->sQvga)
+  {
+    evt.X_POS = (int)(evt.X_POS * cfg->k);
+    evt.Y_POS = (int)(evt.Y_POS * cfg->k);
+  }
+
   midpStoreEventAndSignalForeground(evt);
 }
 
@@ -136,6 +144,12 @@ void JCanvas::mousePressEvent(QMouseEvent *event)
   evt.X_POS = event->x();
   evt.Y_POS = event->y();
 
+  if (cfg->sQvga)
+  {
+    evt.X_POS = (int)(evt.X_POS * cfg->k);
+    evt.Y_POS = (int)(evt.Y_POS * cfg->k);
+  }
+
   midpStoreEventAndSignalForeground(evt);
 }
 
@@ -143,13 +157,19 @@ void JCanvas::mouseReleaseEvent(QMouseEvent *event)
 {
   MidpEvent evt;
 
-    MIDP_EVENT_INITIALIZE(evt);
-    evt.type = MIDP_PEN_EVENT;
-    evt.ACTION = KEYMAP_STATE_RELEASED;
-    evt.X_POS = event->x();
-    evt.Y_POS = event->y();
+  MIDP_EVENT_INITIALIZE(evt);
+  evt.type = MIDP_PEN_EVENT;
+  evt.ACTION = KEYMAP_STATE_RELEASED;
+  evt.X_POS = event->x();
+  evt.Y_POS = event->y();
 
-    midpStoreEventAndSignalForeground(evt);
+  if (cfg->sQvga)
+  {
+    evt.X_POS = (int)(evt.X_POS * cfg->k);
+    evt.Y_POS = (int)(evt.Y_POS * cfg->k);
+  }
+
+  midpStoreEventAndSignalForeground(evt);
 }
 
 void JCanvas::keyPressEvent(QKeyEvent *event)

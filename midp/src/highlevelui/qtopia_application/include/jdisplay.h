@@ -2,6 +2,7 @@
 #define _JDISPLAY_H_
 
 #include <QStackedWidget>
+#include "japplication.h"
 
 class QPixmap;
 
@@ -39,13 +40,14 @@ class JDisplay: public QStackedWidget
     // Display sizes cannot be calculated here, thus they are calculated by a Canvas native peer and stored here for convenience
     inline int displayWidth() const { return m_width; }
     inline int displayHeight() const { return m_height; }
-    inline void setDisplayWidth(int w) { m_width = w; }
-    inline void setDisplayHeight(int h) { m_height = h; }
+    void setDisplayWidth(int w);
+    void setDisplayHeight(int h);
     
     inline int dpi() const { return m_dpi; }
 
   protected:
     void resizeEvent(QResizeEvent *e);
+    bool event(QEvent *);
   private:
     void resizeBackBuffer(int newWidth, int newHeight); // Handle backbuffer resizing
     static JDisplay *m_instance;
@@ -57,6 +59,8 @@ class JDisplay: public QStackedWidget
     int m_height;
     
     int m_dpi;
+
+    RunConfig *cfg;
 };
 
 #endif // _JDISPLAY_H_

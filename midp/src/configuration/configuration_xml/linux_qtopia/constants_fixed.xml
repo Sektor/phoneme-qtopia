@@ -38,7 +38,7 @@
 
   <constant Type="int"
             Name="SUITE_MEMORY_RESERVED"
-            Value="900"
+            Value="9000"
             Comment="Default MIDletSuite memory reserved."/>
   <constant Type="int"
             Name="SUITE_MEMORY_LIMIT"
@@ -173,11 +173,11 @@
 
   <constant Type="int"
             Name="IMAGE_IMMUT_GLOBAL_LIMIT"
-            Value="3600000"
+            Value="36000000"
             Comment="Global resource limit for immutable images"/>
   <constant Type="int"
             Name="IMAGE_IMMUT_AMS_RESERVED"
-            Value="1200000"
+            Value="12000000"
             Comment="Per suite resource limit for immutable images"/>
   <constant Type="int"
             Name="IMAGE_IMMUT_AMS_LIMIT"
@@ -185,7 +185,7 @@
             Comment="Per suite resource limit for immutable images"/>
   <constant Type="int"
             Name="IMAGE_IMMUT_SUITE_RESERVED"
-            Value="800000"
+            Value="8000000"
             Comment="Per suite resource limit for immutable images"/>
   <constant Type="int"
             Name="IMAGE_IMMUT_SUITE_LIMIT"

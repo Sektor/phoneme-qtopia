@@ -9,6 +9,7 @@
 
 #include <japplication.h>
 #include <jdisplay.h>
+#include <QDesktopWidget>
 
 #include <midp_logging.h>
 
@@ -42,6 +43,9 @@ JApplication::JApplication(int &argc, char **argv)
   vm_suspended = false;
   vm_stopped = true;
   connect(&sliceTimer, SIGNAL(timeout()), SLOT(timeSlice()));
+  connect(this, SIGNAL(aboutToQuit()), SLOT(quitting()));
+  runConf = new QSettings(QCoreApplication::applicationDirPath() + "/run.conf", QSettings::IniFormat);
+  LoadConf();
 }
 
 JApplication::~JApplication()
@@ -152,5 +156,41 @@ void JApplication::destroy()
   }
 }
 
+void JApplication::LoadConf()
+{
+  cfg.sQvga = runConf->value("Display/qvga").toBool();
+  cfg.sForceFullscreen = runConf->value("Display/forceFullscreen").toBool();
+  cfg.sFixed = runConf->value("Display/fixed").toBool();
+  cfg.sWidth = runConf->value("Display/width").toInt();
+  cfg.sHeight = runConf->value("Display/height").toInt();
+
+  cfg.tCalibrate = runConf->value("Touchscreen/calibrate").toBool();
+  cfg.fNoAntiAliasing = runConf->value("Font/noAntiAliasing").toBool();
+  cfg.gQuitOnHide = runConf->value("Common/quitOnHide").toBool();
+
+  QSize screenSize = JApplication::desktop()->availableGeometry().size();
+  cfg.k = (float)cfg.sWidth / (float)screenSize.width();
+}
+
+void JApplication::QvgaStart()
+{
+  QString start_qvga = "sh " + QCoreApplication::applicationDirPath() + "/qvga-start.sh";
+  qDebug() << "Entering QVGA mode.";
+  //qDebug() << start_qvga;
+  system(start_qvga.toUtf8().data());
+}
+
+void JApplication::QvgaStop()
+{
+  QString stop_qvga = "sh " + QCoreApplication::applicationDirPath() + "/qvga-stop.sh";
+  qDebug() << "Leaving QVGA mode.";
+  //qDebug() << stop_qvga;
+  system(stop_qvga.toUtf8().data());
+}
+
+void JApplication::quitting()
+{
+  if (cfg.sQvga) JApplication::instance()->QvgaStop(); //
+}
 
 #include "moc_japplication.cpp"

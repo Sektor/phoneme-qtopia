@@ -36,8 +36,19 @@ JFont::JFont(int face, int style, int size)
       qfont_size = QFONT_SIZE_LARGE;
       break;
   }
+
+  RunConfig *cfg = &(JApplication::instance()->cfg);
+  if (cfg->sFixed)
+  {
+    qfont_size =  (int)(qfont_size * cfg->k);
+  }
+  if (cfg->fNoAntiAliasing)
+  {
+    setStyleStrategy(QFont::NoAntialias);
+  }
+
   setPointSize(qfont_size);
-  
+
   switch (face)
   {
     case FACE_SYSTEM:
