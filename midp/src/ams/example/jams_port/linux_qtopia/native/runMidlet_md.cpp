@@ -22,6 +22,7 @@
  * Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa
  * Clara, CA 95054 or visit www.sun.com if you need additional
  * information or have any questions.
+ * Qtopia adaptation trollsid email: trollsid@gmail.com
  */
 
 #include <stdio.h>
@@ -39,9 +40,17 @@
 #include <heap.h>
 #include <ams_params.h>
 #include <midp_properties_port.h>
+#include <midp_run_vm.h>
+#include <Qtopia>
+#include <QDir>
+#include <qtopiaapplication.h>
+#include <japplication.h>
+#include <unistd.h>
+#include <QValueSpaceObject>
 
 /** Maximum number of command line arguments. */
 #define RUNMIDLET_MAX_ARGS 32
+
 
 /** Usage text for the run MIDlet executable. */
 static const char* const runUsageText =
@@ -74,6 +83,21 @@ static const char* const runUsageText =
  *       messages to be sent via the log/trace service, or if
  *       they should remain as printf calls
  */
+ 
+void checkDir(QString path)
+{
+    QDir target(path);
+    if(!target.exists())
+    {
+	target.mkdir(path);
+    }
+} 
+
+int pid()
+{
+	return getpid();
+}
+
 int
 runMidlet(int argc, char** commandlineArgs) {
     int status = -1;
@@ -102,7 +126,10 @@ runMidlet(int argc, char** commandlineArgs) {
     JVM_Initialize(); /* It's OK to call this more than once */
 
     /* get midp application directory, set it */
-    appDir = getApplicationDir(argv[0]);
+    QString path = Qtopia::packagePath() + "java/appdb";
+    appDir = path.toLatin1().data();
+    confDir = path.toLatin1().data();
+//    appDir = getApplicationDir(argv[0]);
     if (appDir == NULL) {
         REPORT_ERROR(LC_AMS, "Failed to recieve midp application directory");
         return -1;
@@ -111,12 +138,12 @@ runMidlet(int argc, char** commandlineArgs) {
     midpSetAppDir(appDir);
 
     /* get midp configuration directory, set it */
-    confDir = getConfigurationDir(argv[0]);
+//    confDir = getConfigurationDir(argv[0]);
     if (confDir == NULL) {
         REPORT_ERROR(LC_AMS, "Failed to recieve midp configuration directory");
         return -1;
     }
-    
+
     midpSetConfigDir(confDir);
 
     if (midpInitialize() != 0) {
@@ -148,7 +175,7 @@ runMidlet(int argc, char** commandlineArgs) {
 	        return -1;
 	    }
 
-        argv[0] = progName; 
+        argv[0] = progName;
 	    for (i = 0; i < numberOfParams; i++) {
             /* argv[0] is the program name */
             argv[i + 1] = ppParamsFromPlatform[i];
@@ -157,9 +184,9 @@ runMidlet(int argc, char** commandlineArgs) {
 
     /* if savedNumberOfParams > 0, ignore the command-line parameters */
     if (savedNumberOfParams <= 0) {
-        /* 
-         * Debugger port: command-line argument overrides 
-         * configuration settings. 
+        /*
+         * Debugger port: command-line argument overrides
+         * configuration settings.
          */
         {
             char* debuggerPortString =
@@ -405,11 +432,92 @@ runMidlet(int argc, char** commandlineArgs) {
         break;
     }
 
-    if (JVM_GetConfig(JVM_CONFIG_SLAVE_MODE) == KNI_FALSE) {	
+    if (JVM_GetConfig(JVM_CONFIG_SLAVE_MODE) == KNI_FALSE) {
         midpFinalize();
     }
 
     ams_free_startup_params(ppSavedParams, savedNumberOfParams);
-    
+
     return status;
 }
+
+int runJVM()
+{
+	int status = -1;
+	char *appDir;
+	char *confDir;
+	int repeatMidlet = 0;
+	MIDPError mipdError;
+        pcsl_string classname = PCSL_STRING_NULL;
+        
+	JVM_Initialize();
+
+	QString path = Qtopia::packagePath() + "java/appdb";
+	appDir = path.toLatin1().data();
+	confDir = path.toLatin1().data();
+	if(appDir == NULL)
+	{
+		REPORT_ERROR(LC_AMS, "Failed to recieve midp application directory.");
+		return -1;
+	}
+	midpSetAppDir(appDir);
+	if(confDir == NULL)
+	{
+		REPORT_ERROR(LC_AMS, "Failed to recieve midp configuration directory.");
+		return -2;
+	}
+	midpSetConfigDir(confDir);
+	setHeapParameters();
+	char *additionalPath = "internal";
+        char *clName = "com.sun.midp.appmanager.MVMManager";
+        do
+        {
+            if(pcsl_string_from_chars(clName, &classname) != PCSL_STRING_OK)
+            {
+                return -3;
+            }
+            pcsl_string arg = PCSL_STRING_NULL;;
+            do{
+                    status = midp_run_midlet_with_args_cp(-1, &classname, &arg, &arg, &arg,
+                                                                                             0, additionalPath);
+            }while(repeatMidlet && status  != MIDP_SHUTDOWN_STATUS);
+        }while(0);
+        switch (status)
+        {
+            case MIDP_SHUTDOWN_STATUS:
+                break;
+
+            case MIDP_ERROR_STATUS:
+                REPORT_ERROR(LC_AMS, "The MIDlet suite could not be run.");
+                break;
+
+            case SUITE_NOT_FOUND_STATUS:
+                REPORT_ERROR(LC_AMS, "The MIDlet suite was not found.");
+                break;
+                
+            default:
+                break;
+        }
+        if (JVM_GetConfig(JVM_CONFIG_SLAVE_MODE) == KNI_FALSE)
+        {
+            midpFinalize();
+        }
+        pcsl_string_free(&classname);
+        return status;
+}
+
+int main(int argc, char **argv)
+{
+    int stat;
+    if(argc > 1)
+    {
+        stat = runMidlet(argc, argv);
+    }
+    else
+    {
+	stat = runJVM();
+    }
+
+    return stat;
+}
+

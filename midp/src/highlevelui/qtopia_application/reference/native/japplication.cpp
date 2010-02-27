@@ -1,6 +1,5 @@
 #include <QTimer>
 #include <QtDebug>
-
 #include <jvm.h>
 #include <suspend_resume.h>
 #include <jvmspi.h>
@@ -12,6 +11,8 @@
 #include <QDesktopWidget>
 
 #include <midp_logging.h>
+
+
 
 #define LC_QTOPIA 10345
 
@@ -42,6 +43,7 @@ JApplication::JApplication(int &argc, char **argv)
   sliceTimer.setSingleShot(true);
   vm_suspended = false;
   vm_stopped = true;
+
   connect(&sliceTimer, SIGNAL(timeout()), SLOT(timeSlice()));
   connect(this, SIGNAL(aboutToQuit()), SLOT(quitting()));
   runConf = new QSettings(QCoreApplication::applicationDirPath() + "/run.conf", QSettings::IniFormat);
@@ -141,7 +143,7 @@ void JApplication::init()
   qDebug("JApplication initializing");
   if (jApp)
     return;
-  char *argv[] = {"kvm"};
+  char *argv[] = {"runMidlet"};
   int argc = 1;
   jApp = new JApplication(argc, argv);
   qDebug("JApplication initialized");
