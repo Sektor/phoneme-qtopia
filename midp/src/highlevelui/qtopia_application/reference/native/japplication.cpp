@@ -46,7 +46,7 @@ JApplication::JApplication(int &argc, char **argv)
 
   connect(&sliceTimer, SIGNAL(timeout()), SLOT(timeSlice()));
   connect(this, SIGNAL(aboutToQuit()), SLOT(quitting()));
-  runConf = new QSettings(QCoreApplication::applicationDirPath() + "/run.conf", QSettings::IniFormat);
+  runConf = new QSettings(Qtopia::packagePath() + "/java/neo/run.conf", QSettings::IniFormat);
   LoadConf();
 }
 
@@ -176,7 +176,7 @@ void JApplication::LoadConf()
 
 void JApplication::QvgaStart()
 {
-  QString start_qvga = "sh " + QCoreApplication::applicationDirPath() + "/qvga-start.sh";
+  QString start_qvga = "sh " + Qtopia::packagePath() + "/java/neo/qvga-start.sh";
   qDebug() << "Entering QVGA mode.";
   //qDebug() << start_qvga;
   system(start_qvga.toUtf8().data());
@@ -184,7 +184,7 @@ void JApplication::QvgaStart()
 
 void JApplication::QvgaStop()
 {
-  QString stop_qvga = "sh " + QCoreApplication::applicationDirPath() + "/qvga-stop.sh";
+  QString stop_qvga = "sh " + Qtopia::packagePath() + "/java/neo/qvga-stop.sh";
   qDebug() << "Leaving QVGA mode.";
   //qDebug() << stop_qvga;
   system(stop_qvga.toUtf8().data());
